@@ -93,7 +93,7 @@ int list_append(List* list, void* item)
         }
         list->size = list->size * 2;
     } else if (list->length > list->size) {
-        list_unlock(list);
+        result = list_unlock(list);
         if (result)
             return NORELEASE; /* Cannot release lock */
         return UNKOWN; /* Sanity check */
@@ -103,7 +103,7 @@ int list_append(List* list, void* item)
     list->data[list->length] = item;
     list->length++;
 
-    list_unlock(list);
+    result = list_unlock(list);
     if (result)
         return NORELEASE; /* Cannot release lock */
     return 0;
@@ -119,7 +119,7 @@ void* list_pop(List* list)
 
     /* Pop item */
     if (!list->length) {
-        list_unlock(list);
+        result = list_unlock(list);
         if (result)
             return NULL; /* Cannot release lock */
         return NULL;
@@ -133,7 +133,7 @@ void* list_pop(List* list)
         list->data = (void**)realloc(list->data, (list->size / 2) * sizeof(void*));
         if (list->data == NULL) {
             perror("list_pop");
-            list_unlock(list);
+            result = list_unlock(list);
             if (result)
                 return NULL; /* Cannot release lock */
             return NULL; /* Memory allocation failed */
@@ -141,7 +141,7 @@ void* list_pop(List* list)
         list->size = list->size / 2;
     }
 
-    list_unlock(list);
+    result = list_unlock(list);
     if (result)
         return NULL; /* Cannot release lock */
     return item;
@@ -165,7 +165,7 @@ int list_remove(List* list, size_t index)
         list->data = (void**)realloc(list->data, (list->size / 2) * sizeof(void*));
         if (list->data == NULL) {
             perror("list_pop");
-            list_unlock(list);
+            result = list_unlock(list);
             if (result)
                 return NORELEASE; /* Cannot release lock */
             return NOALLOCATE; /* Memory allocation failed */
@@ -173,7 +173,7 @@ int list_remove(List* list, size_t index)
         list->size = list->size / 2;
     }
 
-    list_unlock(list);
+    result = list_unlock(list);
     if (result)
         return NORELEASE; /* Cannot release lock */
     return 0;
