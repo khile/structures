@@ -20,7 +20,7 @@ int init_list_size(List* list, size_t size)
         return NOINIT; /* Can not init mutex */
     list->data = (void**)malloc(size * sizeof(void*));
     if (list->data == NULL) {
-        perror("new_list_size");
+        perror("init_list_size");
         return NOALLOCATE; /* Memory allocation failed */
     }
     list->size = size;
@@ -164,7 +164,7 @@ int list_remove(List* list, size_t index)
     if (list->size / 2 >= MIN_SIZE && list->length < list->size / 2) {
         list->data = (void**)realloc(list->data, (list->size / 2) * sizeof(void*));
         if (list->data == NULL) {
-            perror("list_pop");
+            perror("list_remove");
             result = list_unlock(list);
             if (result)
                 return NORELEASE; /* Cannot release lock */
