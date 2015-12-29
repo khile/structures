@@ -7,10 +7,6 @@
 #ifndef LIST_H
 #define LIST_H
 
-
-#define DEBUG 1
-#define VERBOSE 1
-
 #define MIN_SIZE 1
 
 /*
