@@ -11,7 +11,6 @@
 
 #include "list.h"
 
-
 int init_list_size(List* list, size_t size)
 {
     int result;

@@ -35,7 +35,6 @@
 #define LISTEMPTY 7
 #define UNKOWN 8
 
-
 typedef struct {
     pthread_mutex_t lock;   /* Mutex used to make lists thread safe */
     size_t size;            /* Size of data */
@@ -43,14 +42,11 @@ typedef struct {
     void** data;
 } List;
 
-
 int init_list_size(List* list, size_t size);
 int init_list(List* list);
 int destroy_list(List* list);
-
 int list_append(List* list, void* item);
 void* list_pop(List* list);
 int list_remove(List* list, size_t index);
-
 
 #endif /* LIST_H */
