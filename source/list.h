@@ -12,14 +12,15 @@
 /*
  * Error values returned from functions returning int.
  *
+ * Note: Obtaining an error value from any function means that all future
+ *          operations on the list are undefined.
+ *
  * NORELEASE: Cannot release list mutex
  * NOAQUIRE: Cannot aquire list mutex
  * HELD: Non-blocking lock failed because mutex is already held
  * NODESTROY: Cannot destoy list mutex
  * NOINIT: Cannot init list mutex
  * NOALLOCATE: Cannot allocate/deallocate memory
- * LISTEMPTY: List is empty
- * UNKOWN: Undefined error
  *
  */
 #define NORELEASE 1
@@ -28,8 +29,6 @@
 #define NODESTROY 4
 #define NOINIT 5
 #define NOALLOCATE 6
-#define LISTEMPTY 7
-#define UNKOWN 8
 
 typedef struct {
     pthread_mutex_t lock;   /* Mutex used to make lists thread safe */
