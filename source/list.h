@@ -10,7 +10,7 @@
 #define MIN_SIZE 1
 
 /*
- * Error values returned from functions returning int.
+ * Error Values
  *
  * Note: Obtaining an error value from any function means that all future
  *          operations on the list are undefined.
@@ -21,6 +21,7 @@
  * NODESTROY: Cannot destoy list mutex
  * NOINIT: Cannot init list mutex
  * NOALLOCATE: Cannot allocate/deallocate memory
+ * LISTEMPTY: List is empty
  *
  */
 #define NORELEASE 1
@@ -29,6 +30,7 @@
 #define NODESTROY 4
 #define NOINIT 5
 #define NOALLOCATE 6
+#define LISTEMPTY 7
 
 typedef struct {
     pthread_mutex_t lock;   /* Mutex used to make lists thread safe */
@@ -41,7 +43,7 @@ int init_list_size(List* list, size_t size);
 int init_list(List* list);
 int destroy_list(List* list);
 int list_append(List* list, void* item);
-void* list_pop(List* list);
+void* list_pop(List* list, int* error);
 int list_remove(List* list, size_t index);
 
 #endif /* LIST_H */

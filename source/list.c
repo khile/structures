@@ -99,39 +99,47 @@ int list_append(List* list, void* item)
 
     result = list_unlock(list);
     if (result)
-        return NORELEASE; /* Cannot release lock */
+        return NORELEASE;
     return 0;
 }
 
-void* list_pop(List* list)
+void* list_pop(List* list, int* error)
 {
     int result;
 
     result = list_lock(list);
-    if (result)
-        return NULL; /* Cannot aquire lock */
+    if (result) {
+        *error = NOAQUIRE;
+        return NULL;
+    }
 
     /* Pop item */
     if (!list->length) {
-        return NULL; /* List is empty */
+        *error = LISTEMPTY;
+        result = list_unlock(list);
+        if (result)
+            *error = NORELEASE;
+        return NULL;
     }
-    void* item=list->data[list->length - 1];
-    list->data[list->length - 1] = NULL; /* This is not needed but useful */
     list->length--;
+    void* item=list->data[list->length];
 
     /* Realloc */
     if (list->size / 2 >= MIN_SIZE && list->length < list->size / 2) {
         list->data = (void**)realloc(list->data, (list->size / 2) * sizeof(void*));
         if (list->data == NULL) {
             perror("list_pop");
-            return NULL; /* Memory allocation failed */
+            *error = NOALLOCATE;
+            return NULL;
         }
         list->size = list->size / 2;
     }
 
     result = list_unlock(list);
-    if (result)
-        return NULL; /* Cannot release lock */
+    if (result) {
+        *error = NORELEASE;
+        return NULL;
+    }
     return item;
 }
 
