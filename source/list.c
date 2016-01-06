@@ -17,11 +17,11 @@ int init_list_size(List* list, size_t size)
 
     result = pthread_mutex_init(&list->lock, NULL);
     if (result)
-        return NOINIT; /* Can not init mutex */
+        return NOINIT;
     list->data = (void**)malloc(size * sizeof(void*));
     if (list->data == NULL) {
         perror("init_list_size");
-        return NOALLOCATE; /* Memory allocation failed */
+        return NOALLOCATE;
     }
     list->size = size;
     list->length = 0;
@@ -37,20 +37,22 @@ int destroy_list(List* list)
 {
     int result;
 
+    /* Free data if we can aquire the lock */
     result = pthread_mutex_trylock(&list->lock);
     if (result == EBUSY) {
-        return HELD; /* The lock is currently being held */
+        return HELD;
     } else if (result) {
-        return NOAQUIRE; /* Cannot aquire the lock */
+        return NOAQUIRE;
     }
     free(list->data);
 
+    /* Destroy the lock */
     result = pthread_mutex_unlock(&list->lock);
     if (result)
-        return NORELEASE; /* Cannot release lock */
+        return NORELEASE;
     result = pthread_mutex_destroy(&list->lock);
     if (result)
-        return NODESTROY; /* Lock cannot be destroyed */
+        return NODESTROY;
 
     return 0;
 }
@@ -60,7 +62,7 @@ int list_lock(List* list)
     int result;
     result = pthread_mutex_lock(&list->lock);
     if (result)
-        return NOAQUIRE; /* Cannot aquire lock */
+        return NOAQUIRE;
     return 0;
 }
 
@@ -69,7 +71,7 @@ int list_unlock(List* list)
     int result;
     result = pthread_mutex_unlock(&list->lock);
     if (result)
-        return NORELEASE; /* Cannot release lock */
+        return NORELEASE;
     return 0;
 }
 
@@ -79,14 +81,14 @@ int list_append(List* list, void* item)
 
     result = list_lock(list);
     if (result)
-        return NOAQUIRE; /* Cannot aquire lock */
+        return NOAQUIRE;
 
     /* Realloc */
     if (list->length == list->size) {
         list->data = (void**)realloc(list->data, (list->size * 2) * sizeof(void*));
         if (list->data == NULL) {
             perror("list_append");
-            return NOALLOCATE; /* Memory allocation failed */
+            return NOALLOCATE;
         }
         list->size = list->size * 2;
     }
@@ -139,7 +141,7 @@ int list_remove(List* list, size_t index)
 
     result = list_lock(list);
     if (result)
-        return NOAQUIRE; /* Cannot aquire lock */
+        return NOAQUIRE;
 
     /* Remove and shift */
     for(int i=index; i < list->length - 1; i++)
@@ -151,13 +153,13 @@ int list_remove(List* list, size_t index)
         list->data = (void**)realloc(list->data, (list->size / 2) * sizeof(void*));
         if (list->data == NULL) {
             perror("list_remove");
-            return NOALLOCATE; /* Memory allocation failed */
+            return NOALLOCATE;
         }
         list->size = list->size / 2;
     }
 
     result = list_unlock(list);
     if (result)
-        return NORELEASE; /* Cannot release lock */
+        return NORELEASE;
     return 0;
 }
