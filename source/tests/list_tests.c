@@ -47,7 +47,7 @@ void print_error(int error)
 int main(int argc, char** argv)
 {
     int result;
-    int error;
+    list_result error;
 
     int size;
     List list;

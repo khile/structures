@@ -11,7 +11,7 @@
 
 #include "list.h"
 
-int init_list_size(List* list, size_t size)
+list_result init_list_size(List* list, size_t size)
 {
     int result;
 
@@ -25,15 +25,15 @@ int init_list_size(List* list, size_t size)
     }
     list->size = size;
     list->length = 0;
-    return 0;
+    return SUCCESS;
 }
 
-int init_list(List* list)
+list_result init_list(List* list)
 {
     return init_list_size(list, MIN_SIZE);
 }
 
-int destroy_list(List* list)
+list_result destroy_list(List* list)
 {
     int result;
 
@@ -54,28 +54,28 @@ int destroy_list(List* list)
     if (result)
         return NODESTROY;
 
-    return 0;
+    return SUCCESS;
 }
 
-int list_lock(List* list)
+list_result list_lock(List* list)
 {
     int result;
     result = pthread_mutex_lock(&list->lock);
     if (result)
         return NOAQUIRE;
-    return 0;
+    return SUCCESS;
 }
 
-int list_unlock(List* list)
+list_result list_unlock(List* list)
 {
     int result;
     result = pthread_mutex_unlock(&list->lock);
     if (result)
         return NORELEASE;
-    return 0;
+    return SUCCESS;
 }
 
-int list_append(List* list, void* item)
+list_result list_append(List* list, void* item)
 {
     int result;
 
@@ -100,10 +100,10 @@ int list_append(List* list, void* item)
     result = list_unlock(list);
     if (result)
         return NORELEASE;
-    return 0;
+    return SUCCESS;
 }
 
-void* list_pop(List* list, int* error)
+void* list_pop(List* list, list_result* error)
 {
     int result;
 
@@ -143,7 +143,7 @@ void* list_pop(List* list, int* error)
     return item;
 }
 
-int list_remove(List* list, size_t index)
+list_result list_remove(List* list, size_t index)
 {
     int result;
 
@@ -169,5 +169,5 @@ int list_remove(List* list, size_t index)
     result = list_unlock(list);
     if (result)
         return NORELEASE;
-    return 0;
+    return SUCCESS;
 }

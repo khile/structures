@@ -15,6 +15,7 @@
  * Note: Obtaining an error value from any function means that all future
  *          operations on the list are undefined.
  *
+ * SUCCESS: 0 is returned when there are no errors
  * NORELEASE: Cannot release list mutex
  * NOAQUIRE: Cannot aquire list mutex
  * HELD: Non-blocking lock failed because mutex is already held
@@ -24,13 +25,16 @@
  * LISTEMPTY: List is empty
  *
  */
-#define NORELEASE 1
-#define NOAQUIRE 2
-#define HELD 3
-#define NODESTROY 4
-#define NOINIT 5
-#define NOALLOCATE 6
-#define LISTEMPTY 7
+typedef enum {
+    SUCCESS,
+    NORELEASE,
+    NOAQUIRE,
+    HELD,
+    NODESTROY,
+    NOINIT,
+    NOALLOCATE,
+    LISTEMPTY
+} list_result;
 
 typedef struct {
     pthread_mutex_t lock;   /* Mutex used to make lists thread safe */
@@ -39,11 +43,11 @@ typedef struct {
     void** data;
 } List;
 
-int init_list_size(List* list, size_t size);
-int init_list(List* list);
-int destroy_list(List* list);
-int list_append(List* list, void* item);
-void* list_pop(List* list, int* error);
-int list_remove(List* list, size_t index);
+list_result init_list_size(List* list, size_t size);
+list_result init_list(List* list);
+list_result destroy_list(List* list);
+list_result list_append(List* list, void* item);
+void* list_pop(List* list, list_result* error);
+list_result list_remove(List* list, size_t index);
 
 #endif /* LIST_H */
