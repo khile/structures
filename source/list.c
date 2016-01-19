@@ -30,7 +30,7 @@ list_result init_list_size(List* list, size_t size)
 
 list_result init_list(List* list)
 {
-    return init_list_size(list, MIN_SIZE);
+    return init_list_size(list, LIST_MIN_SIZE);
 }
 
 list_result destroy_list(List* list)
@@ -125,7 +125,7 @@ void* list_pop(List* list, list_result* error)
     void* item=list->data[list->length];
 
     /* Realloc */
-    if (list->size / 2 >= MIN_SIZE && list->length < list->size / 2) {
+    if (list->size / 2 >= LIST_MIN_SIZE && list->length < list->size / 2) {
         list->data = (void**)realloc(list->data, (list->size / 2) * sizeof(void*));
         if (list->data == NULL) {
             perror("list_pop");
@@ -157,7 +157,7 @@ list_result list_remove(List* list, size_t index)
     list->length--;
 
     /* Realloc */
-    if (list->size / 2 >= MIN_SIZE && list->length < list->size / 2) {
+    if (list->size / 2 >= LIST_MIN_SIZE && list->length < list->size / 2) {
         list->data = (void**)realloc(list->data, (list->size / 2) * sizeof(void*));
         if (list->data == NULL) {
             perror("list_remove");

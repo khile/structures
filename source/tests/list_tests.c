@@ -71,7 +71,7 @@ int main(int argc, char** argv)
     result = init_list(&list);
     if (result)
         return -1;
-    assert(list.size == MIN_SIZE);
+    assert(list.size == LIST_MIN_SIZE);
     assert(list.length == 0);
 
     /* list_append test */
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
         result = list_append(&list, strings[i]);
         assert(!result);
     }
-    size = MIN_SIZE;
+    size = LIST_MIN_SIZE;
     while (size < string_count)
         size = size * 2;
     assert(list.size == size);
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
         item = list_pop(&list, &error);
         assert(item != NULL);
     }
-    assert(list.size == MIN_SIZE);
+    assert(list.size == LIST_MIN_SIZE);
     assert(list.length == 0);
     item = list_pop(&list, &error);
     assert(item == NULL);
@@ -103,7 +103,7 @@ int main(int argc, char** argv)
         result = list_append(&list, strings[i]);
         assert(!result);
     }
-    size = MIN_SIZE;
+    size = LIST_MIN_SIZE;
     while (size < string_count) {
         size = size * 2;
     }
@@ -121,7 +121,7 @@ int main(int argc, char** argv)
         assert(!result);
     }
     assert(list.length == 0);
-    assert(list.size == MIN_SIZE);
+    assert(list.size == LIST_MIN_SIZE);
 
     destroy_list(&list); /* Cleaning the kitchen before tearing down the house */
     return 0;
