@@ -85,12 +85,12 @@ list_result list_append(List* list, void* item)
 
     /* Realloc */
     if (list->length == list->size) {
-        list->data = (void**)realloc(list->data, (list->size * 2) * sizeof(void*));
+        list->data = (void**)realloc(list->data, (list->size * LIST_GROWTH) * sizeof(void*));
         if (list->data == NULL) {
             perror("list_append");
             return NOALLOCATE;
         }
-        list->size = list->size * 2;
+        list->size = list->size * LIST_GROWTH;
     }
 
     /* Append item */
@@ -125,14 +125,14 @@ void* list_pop(List* list, list_result* error)
     void* item=list->data[list->length];
 
     /* Realloc */
-    if (list->size / 2 >= LIST_MIN_SIZE && list->length < list->size / 2) {
-        list->data = (void**)realloc(list->data, (list->size / 2) * sizeof(void*));
+    if (list->size / LIST_GROWTH >= LIST_MIN_SIZE && list->length < list->size / LIST_GROWTH) {
+        list->data = (void**)realloc(list->data, (list->size / LIST_GROWTH) * sizeof(void*));
         if (list->data == NULL) {
             perror("list_pop");
             *error = NOALLOCATE;
             return NULL;
         }
-        list->size = list->size / 2;
+        list->size = list->size / LIST_GROWTH;
     }
 
     result = list_unlock(list);
@@ -157,13 +157,13 @@ list_result list_remove(List* list, size_t index)
     list->length--;
 
     /* Realloc */
-    if (list->size / 2 >= LIST_MIN_SIZE && list->length < list->size / 2) {
-        list->data = (void**)realloc(list->data, (list->size / 2) * sizeof(void*));
+    if (list->size / LIST_GROWTH >= LIST_MIN_SIZE && list->length < list->size / LIST_GROWTH) {
+        list->data = (void**)realloc(list->data, (list->size / LIST_GROWTH) * sizeof(void*));
         if (list->data == NULL) {
             perror("list_remove");
             return NOALLOCATE;
         }
-        list->size = list->size / 2;
+        list->size = list->size / LIST_GROWTH;
     }
 
     result = list_unlock(list);

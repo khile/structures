@@ -7,7 +7,8 @@
 #ifndef LIST_H
 #define LIST_H
 
-#define LIST_MIN_SIZE 1
+#define LIST_MIN_SIZE 8
+#define LIST_GROWTH 2
 
 /*
  * Error Values
