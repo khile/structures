@@ -82,7 +82,7 @@ int main(int argc, char** argv)
     }
     size = LIST_MIN_SIZE;
     while (size < string_count)
-        size = size * 2;
+        size = size * LIST_GROWTH;
     assert(list.size == size);
     assert(list.length == string_count);
 
@@ -105,7 +105,8 @@ int main(int argc, char** argv)
     }
     size = LIST_MIN_SIZE;
     while (size < string_count) {
-        size = size * 2;
+        size = size * LIST_GROWTH;
+
     }
     assert(list.size == size);
     assert(list.length == string_count);
